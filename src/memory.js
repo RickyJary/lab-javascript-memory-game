@@ -1,40 +1,33 @@
 class MemoryGame {
-  constructor(cards, pickedCards, pairsClicked, pairsGuessed) {
-    this.cards = cards;
-    this.pickedCards = pickedCards;
-    this.pairsClicked = pairsClicked;
-    this.pairsGuessed = pairsGuessed;
-    cards = [];
+  constructor(cards) {
+    this.cards = cards || [];
     this.pickedCards = [];
     this.pairsClicked = 0;
     this.pairsGuessed = 0;
   }
 
   shuffleCards() {
-    if (!this.cards) {
+    if (!this.cards.length) {
       return undefined;
     }
-    // Fisher-Yates shuffle algorithm
     for (let i = this.cards.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [this.cards[i], this.cards[j]] = [this.cards[j], this.cards[i]];
     }
+    return this.cards;
   }
-
 
   checkIfPair(card1, card2) {
     this.pairsClicked++;
-    if(card1 === card2){
-      this.pairsGuessed++
+    if (card1 === card2) {
+      this.pairsGuessed++;
       return true;
     }
     return false;
   }
 
   checkIfFinished() {
-    if (this.pairsGuessed === this.cards.length/2){
-      return true
-    }
-    return false
+    return this.pairsGuessed === this.cards.length;
   }
 }
+

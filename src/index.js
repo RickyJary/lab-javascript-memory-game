@@ -40,28 +40,46 @@ window.addEventListener('load', (event) => {
     `;
   });
 
-  // Add all the divs to the HTML
+
   document.querySelector('#memory-board').innerHTML = html;
-  // Bind the click event of each element to a function
+
+
   document.querySelectorAll('.card').forEach((card) => {
     card.addEventListener('click', () => {
-      card.classList.toggle("turned");
-      pickedCards.push(card);
-      if(memoryGame.pickedCards.length === 2) {
-        const card1 = pickedCards[0].name;
-        const card2 = pickedCards[1].name;
-        if(memoryGame.checkIfPair(card1, card2)){
-          memoryGame.pickedCards[0].classList.add("blocked");
-          memoryGame.pickedCards[1].classList.add("blocked");
+      card.classList.toggle('turned');
+      memoryGame.pickedCards.push(card);
 
+      if (memoryGame.pickedCards.length === 2) {
+        const card1Name = memoryGame.pickedCards[0].getAttribute('data-card-name');
+        const card2Name = memoryGame.pickedCards[1].getAttribute('data-card-name');
+
+        memoryGame.pairsClicked++;
+        document.getElementById('pairs-clicked').innerText = memoryGame.pairsClicked;
+
+        if (memoryGame.checkIfPair(card1Name, card2Name)) {
+          memoryGame.pickedCards[0].classList.add('blocked');
+          memoryGame.pickedCards[1].classList.add('blocked');
+
+          memoryGame.pairsGuessed++ /2;
+          document.getElementById('pairs-guessed').innerText = memoryGame.pairsGuessed;
+
+          if (memoryGame.checkIfFinished()) {
+            const victoryMessage = document.createElement('div');
+            victoryMessage.id = 'victory-message';
+            victoryMessage.innerHTML = `<h1>🎉 You won!!! 🎉</h1>`;
+            document.body.appendChild(victoryMessage);
+          }
+
+          memoryGame.pickedCards = [];
         } else {
-          setTimeout(()=>{
-            memoryGame.pickedCards[0].classList.remove("blocked");
-            memoryGame.pickedCards[1].classList.remove("blocked"); 
-          }, 1000)
+          setTimeout(() => {
+            memoryGame.pickedCards[0].classList.remove('turned');
+            memoryGame.pickedCards[1].classList.remove('turned');
+
+            memoryGame.pickedCards = [];
+          }, 1000);
         }
       }
     });
-    
   });
 });
